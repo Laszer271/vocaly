@@ -1,3 +1,4 @@
 SpeechRecognition==3.10.0
 pydub==0.25.1
 moviepy==1.0.3
+fastapi[security]==0.100.1
