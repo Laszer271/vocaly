@@ -9,10 +9,10 @@ const MediaComponent = ({ type }) => {
   const description = `Travel back 66 million years to when majestic
     dinosaurs and extraordinary creatures roamed
     the lands, seas, and skies.`;
-  const [selectedFile, setSelectedFile] = useState(null);
   const [audioFileUrl, setAudioFileUrl] = useState();
   const [videoFileUrl, setVideoFileUrl] = useState();
   const [playing, setPlaying] = useState(false);
+  const [error,setError]=useState(null)
 
 
   // handle file selection
@@ -20,6 +20,19 @@ const MediaComponent = ({ type }) => {
     console.log("ADD")
     setPlaying(false);
 
+    //handling choosing wrong type of file
+    const fileType = e.target.files[0].type
+    console.log(fileType)
+    if (title==="Audio" && fileType==="video/mp4"){
+      setError("Please select audio format in this section only!")
+      return 
+    }
+    if (title==="Video" && fileType==="audio/mpeg"){
+      setError("Please select video format in this section only!")
+      return 
+    }
+
+    setError(null)
     if(title==="Video"){
       const data = new FormData();
       data.append("video", e.target.files[0]);
@@ -81,6 +94,7 @@ const MediaComponent = ({ type }) => {
               <p className="text-sm text-gray-500">Be patient!</p>
             </div>
             <div className="w-1/2 flex flex-col items-center justify-center space-y-3">
+              {error && error}
               <InputFile icon={true} value={"Place your " + title} onFileChange={handleFileAdd} />
               <Button value={"Remove"} handleClick={handleFileRemove} />
             </div>
@@ -106,6 +120,7 @@ const MediaComponent = ({ type }) => {
               <p className="text-sm text-gray-500">Be patient!</p>
             </div>
             <div className="w-1/2 flex flex-col items-center justify-center space-y-3">
+              {error && error}
               <InputFile icon={true} value={"Place your " + title} onFileChange={handleFileAdd} />
               <Button value={"Remove"} handleClick={handleFileRemove} />
             </div>
