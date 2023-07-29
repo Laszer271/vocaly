@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import re
 
@@ -19,12 +19,23 @@ app.add_middleware(
 )
 
 
-@app.post("/api/video")
-async def read_item(info: Request):
-    data = await info.json()
-    # data = data['latexText']
+@app.post("/video")
+async def read_item(video: UploadFile):
+    print("JESTEM")
+    data = await video.read()
+    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/video/" + video.filename
+    with open(save_to,'wb') as f:
+        f.write(data)
 
+    return {"filenames": video.filename}
 
 @app.post("/audio")
-async def read_item(info: Request):
-    pass
+async def read_item(audio: UploadFile):
+    print("JESTEM")
+    data = await audio.read()
+    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/audio/" + audio.filename
+    with open(save_to,'wb') as f:
+        f.write(data)
+
+    return {"filenames": audio.filename}
+
