@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import axios from "axios"; // Tylko jeśli rzeczywiście używasz axios w swoim komponencie
 import Button from "./button";
+import InputFile from "./inputFile";
 
 const MediaComponent = ({ type }) => {
-
   const title = type;
   const description = `Travel back 66 million years to when majestic
     dinosaurs and extraordinary creatures roamed
@@ -38,46 +38,43 @@ const MediaComponent = ({ type }) => {
   };
 
   // handle play control
-  const handlePlay = () => {
-    setPlaying(true);
+  const handlePlayChange = () => {
+    setPlaying(!playing);
   };
 
   // handle pause control
   const handlePause = () => {
     setPlaying(false);
-  }
-  const [activeButton, setActiveButton] = useState(true);
+  };
   return (
     <div className="media-component">
-      <div className="flex flex-row">
-        <div className="basis-1/2 text-left">
-          <h1 className="font-bold">{title}</h1>
-          {description}
-          <br />
-          Documentary · 1 hr 3 min
+      <div className="flex flex-row justify-between p-10 ">
+        <div className="w-1/2 text-left">
+          <h1 className="font-bold text-4xl mb-2">{title}</h1>
+          <p className="text-lg mb-2">{description}</p>
+          <p className="text-sm text-gray-500">Be patient!</p>
         </div>
-        <div className="basis-1/2 flex flex-col text-center ">
-          <Button value={"Place your " + type} />
-          <Button value={"Remove" } />
-
+        <div className="w-1/2 flex flex-col items-center justify-center space-y-3">
+          <InputFile icon={true} value={"Place your " + title} onFileChange={handleFileChange}/>
+          <Button value={"Remove"} />
         </div>
       </div>
-      {/* {type === "video" ? (
-        <ReactPlayer url={fileUrl} controls playing={false} />
-      ) : type === "voice" ? (
-        <audio controls>
-          <source src={fileUrl} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-      ) : null} */}
-      <div>
-        <input type="file" onChange={handleFileChange} />
-        <button onClick={handlePlay}>Play</button>
-        <button onClick={handlePause}>Pause</button>
-        {fileUrl && <ReactPlayer playing={playing} url={fileUrl} />}
+      <div className="flex flex-row justify-between">
+        <div className="w-1/2 flex flex-col items-center justify-center space-y-3">
+          {fileUrl && (
+            <>
+              <ReactPlayer width="100%" height="70%" playing={playing} url={fileUrl} />
+              <Button ifIcon={true} handleClick={handlePlayChange} />
+            </>
+          )}
+        </div>
+        <div className="w-1/2 flex flex-col items-center justify-center space-y-3">
+  
+        </div>
       </div>
     </div>
   );
+  
 };
 
 export default MediaComponent;
