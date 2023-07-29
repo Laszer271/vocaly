@@ -39,3 +39,9 @@ async def read_item(audio: UploadFile):
 
     return {"filenames": audio.filename}
 
+
+@app.post("/settings")
+async def receive_settings(request: Request):
+    data = await request.json()
+    print(data)
+    return {"message": data}
