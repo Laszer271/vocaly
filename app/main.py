@@ -23,10 +23,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Global Variables:
 saved_settings = None
-# saved_voice_sample = None
 transcript = None
 transcript_manual_change = False
+last_data = None
+voicesample_manual_change = None
+voicesample = None
 
 
 @app.post("/video")
@@ -47,6 +50,12 @@ async def read_item(video: UploadFile):
     print('0. Save video to temp file')
     video_path = save_data(data, './' + video.filename)
 
+    # Save video content to global variable
+    global last_data
+    with open(video_path, "rb") as f:
+        input_bytes = f.read()
+        last_data = input_bytes
+
     # 1. Get audio from video
     print('1. Get audio from video')
     audio_path = get_audio_from_video(video_path, 'temp_audio.wav')
@@ -55,6 +64,14 @@ async def read_item(video: UploadFile):
     print('1.5 Convert audio to mp3')
     mp3_audio_path = convert_wav_to_mp3(
         audio_path, audio_path.replace('.mp3', '_mp3.mp3').replace('.wav', '.mp3'))
+    
+    global voicesample_manual_change
+    global voicesample
+    if voicesample_manual_change:
+        voicesample_audio_path = convert_wav_to_mp3(
+            voicesample, voicesample.replace('.mp3', '_mp3.mp3').replace('.wav', '.mp3'))
+    else:
+        voicesample_audio_path = None
 
     # 2. Get text from audio
     print('2. Get text from audio')
@@ -68,7 +85,10 @@ async def read_item(video: UploadFile):
 
     # 3. Clone voice (if needed) from audio
     print('3. Clone voice (if needed) from audio')
-    voice = clone_voice(mp3_audio_path)
+    if voicesample_audio_path is not None:
+        voice = clone_voice(voicesample_audio_path)
+    else:
+        voice = clone_voice(mp3_audio_path)
 
     # 4. Generate new audio from text (and cloned voice)
     print('4. Generate new audio from text (and cloned voice)')
@@ -126,7 +146,6 @@ async def read_item(video: UploadFile):
     #     os.remove(final_video_path_with_sub)
     voice.delete()
 
-
     # 7. Output edited video
     print('7. Output edited video')
     return Response(content=final_video_bytes, media_type="video/wav")
@@ -150,10 +169,24 @@ async def read_item(audio: UploadFile):
     print('0. Save audio to temp file')
     audio_path = save_data(data, './' + audio.filename)
 
+    # Save audio content to global variable
+    global last_data
+    with open(audio_path, "rb") as f:
+        input_bytes = f.read()
+        last_data = input_bytes
+
     # 1.5 Convert audio to mp3
     print('1 Convert audio to mp3')
     mp3_audio_path = convert_wav_to_mp3(
         audio_path, audio_path.replace('.mp3', '_mp3.mp3').replace('.wav', '.mp3'))
+    
+    global voicesample_manual_change
+    global voicesample
+    if voicesample_manual_change:
+        voicesample_audio_path = convert_wav_to_mp3(
+            voicesample, voicesample.replace('.mp3', '_mp3.mp3').replace('.wav', '.mp3'))
+    else:
+        voicesample_audio_path = None
 
     # 2. Get text from audio
     print('2. Get text from audio')
@@ -168,7 +201,10 @@ async def read_item(audio: UploadFile):
 
     # 3. Clone voice (if needed) from audio
     print('3. Clone voice (if needed) from audio')
-    voice = clone_voice(mp3_audio_path)
+    if voicesample_audio_path is not None:
+        voice = clone_voice(voicesample_audio_path)
+    else:
+        voice = clone_voice(mp3_audio_path)
 
     # 4. Generate new audio from text (and cloned voice)
     print('4. Generate new audio from text (and cloned voice)')
@@ -206,9 +242,13 @@ async def receive_settings(request: Request):
 async def read_item(voiceSample: UploadFile):
     print("Voice Sample")
     data = await voiceSample.read()
-    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/voiceSample/" + \
-        voiceSample.filename
-    with open(save_to, 'wb') as f:
+
+    global voicesample_manual_change
+    global voicesample
+    voicesample_manual_change = True
+    voicesample = data.filename
+
+    with open(voiceSample.filename, 'wb') as f:
         f.write(data)
 
     return {"filenames": voiceSample.filename}
@@ -230,4 +270,7 @@ async def post_text(request: Request):
     global transcript
     transcript_manual_change = True
     transcript = data
+
+    global last_data
+    return Response(content=last_data)
 
