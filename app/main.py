@@ -22,7 +22,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-output_processed_video = None
+saved_settings = None
+saved_voice_sample = None
 
 
 @app.post("/video")
@@ -41,7 +42,7 @@ async def read_item(video: UploadFile):
     
     # 0. Save video to temp file
     print('0. Save video to temp file')
-    video_path = save_video(data, './' + video.filename)
+    video_path = save_data(data, './' + video.filename)
 
     # 1. Get audio from video
     print('1. Get audio from video')
@@ -80,6 +81,7 @@ async def read_item(video: UploadFile):
     os.remove(mp3_audio_path)
     os.remove(generated_audio_path)
     os.remove(final_video_path)
+    # TODO: erase created voice
 
     # 7. Output edited video
     print('7. Output edited video')
@@ -87,13 +89,54 @@ async def read_item(video: UploadFile):
 
 @app.post("/audio")
 async def read_item(audio: UploadFile):
-    print("JESTEM")
+    print("Video processing:", audio.filename)
     data = await audio.read()
-    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/audio/" + audio.filename
-    with open(save_to,'wb') as f:
-        f.write(data)
+    
+    # 0. Save audio to temp file
+    # 1. Convert audio to mp3
+    # 2. Get text from audio
+    # 3. Clone voice (if needed) from audio
+    # 4. Generate new audio from text (and cloned voice)
+    # 5. Merge new audio with vidaudioo
+    # 6. Clean the temp files
+    # 7. Output edited video
+    
+    # 0. Save video to temp file
+    print('0. Save audio to temp file')
+    audio_path = save_data(data, './' + audio.filename)
 
-    return {"filenames": audio.filename}
+    # 1.5 Convert audio to mp3
+    print('1 Convert audio to mp3')
+    mp3_audio_path = convert_wav_to_mp3(audio_path, audio_path.replace('.wav', '.mp3'))
+    
+    # 2. Get text from audio
+    print('2. Get text from audio')
+    transcript = get_text_from_audio(mp3_audio_path)
+    print(transcript)
+    
+    # 3. Clone voice (if needed) from audio
+    print('3. Clone voice (if needed) from audio')
+    voice = clone_voice(mp3_audio_path)
+    
+    # 4. Generate new audio from text (and cloned voice)
+    print('4. Generate new audio from text (and cloned voice)')
+    generated_audio_path = generate_audio(transcript, voice, 'temp_generated.wav')
+
+    # 5.5 Convert video to bytes
+    print('5.5 Convert audio to bytes')
+    with open(generated_audio_path, "rb") as f:
+        final_audio_bytes = f.read()
+
+    # 6. Clean the temp files
+    print('6. Clean the temp files')
+    os.remove(audio_path)
+    os.remove(mp3_audio_path)
+    os.remove(generated_audio_path)
+    # TODO: erase created voice
+
+    # 7. Output edited video
+    print('7. Output edited video')
+    return Response(content=final_audio_bytes, media_type="audio/mp3")
 
 
 @app.post("/settings")
@@ -102,6 +145,7 @@ async def receive_settings(request: Request):
     print(data)
     return {"message": data}
 
+<<<<<<< HEAD
 @app.post("/voicesample")
 async def read_item(voiceSample: UploadFile):
     print("Voice Sample")
@@ -111,3 +155,12 @@ async def read_item(voiceSample: UploadFile):
         f.write(data)
 
     return {"filenames": voiceSample.filename}
+=======
+
+@app.post("/voicesample")
+async def receive_settings(audio: UploadFile):
+    print("Voice sample")
+    data = await audio.read()
+    print(data)
+    return {"message": data}
+>>>>>>> video and audio processing works
