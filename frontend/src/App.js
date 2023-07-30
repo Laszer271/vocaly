@@ -30,6 +30,7 @@ function App() {
         {AV[1]}
       </button>
     </div>
+    
     <MediaComponent type={name}/>
   </div>
   </div>
