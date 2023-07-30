@@ -263,28 +263,35 @@ const MediaComponent = ({ type }) => {
             {error && error}
             <InputFile icon={true} value={"Place your " + title} onFileChange={handleFileAdd} />
             <Button value={"Remove"} handleClick={handleFileRemove} />
-            {returnedAudio && (
-              <button className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
+            {returnedAudio && (!doTextEdit ? (
+              <button onClick={handleTextFetch} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
                 Change Text
               </button>
-            )}
+            ) : (
+              <button onClick={handleTextEdition} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
+                Save Changes
+              </button>
+            ))}
           </div>
           <div className="w-1/3 flex flex-col items-center justify-center">
             <Settings setFormData={setFormData} formData={formData} setVoiceSample={setVoiceSample} />
           </div>
         </div>
+        {doTextEdit ? (
+            <TextEditor editText={editText} setEditText={setEditText} />
+          ) : null}
         <div className="flex flex-row justify-between">
           <div className="w-1/2 flex flex-col items-center justify-center mt-20">
-            {audioFileUrl && (
-              <>
+          {(audioFileUrl && !doTextEdit) && (
+            <>
                 <audio controls>
                   <source src={audioFileUrl} type="audio/mpeg" />
                 </audio>
               </>
             )}
           </div>
-          <div className="w-1/2 flex flex-col items-center justify-center mt-20">
-            {returnedAudio ? (
+          <div className="w-1/2 flex flex-col items-center justify-center  mt-20">
+            {(returnedAudio && !doTextEdit) ? (
               <>
                 <audio controls>
                   <source src={returnedAudio} type="audio/mpeg" />
@@ -292,7 +299,7 @@ const MediaComponent = ({ type }) => {
               </>
             ) : audioLoading ? (
               <>
-                <div className="text-2xl">Audio preprocessing...</div>
+                <div className="text-2xl">Video preprocessing...</div>
                 <Puff color="#008080" height={100} width={100} />
               </>
             ) : null}
