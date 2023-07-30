@@ -170,6 +170,9 @@ const MediaComponent = ({ type }) => {
   
   async function handleTextEdition(){
     setDoTextEdit(false);
+    setReturnedVideo(null)
+    setVideoLoading(true)
+    console.log(returnedVideo, videoLoading)
     try{
       const response = await fetch(url + "/textedition",{
         method: "POST",
@@ -178,14 +181,17 @@ const MediaComponent = ({ type }) => {
       if (!response.ok){
         console.error("Failed")
       }
-      const blob = await response.blob()
-      const videoBlobUrl = URL.createObjectURL(blob)
-      setReturnedVideo(videoBlobUrl)
+      // const blob = await response.blob()
+      // const videoBlobUrl = URL.createObjectURL(blob)
+      // setReturnedVideo(videoBlobUrl)
+      // setVideoLoading(false)
     }
     catch(error){
       console.error("Error posting text:", error);
     }
   }
+  
+
   
     // handle play control
   const handlePlayChangeOriginal = () => {
