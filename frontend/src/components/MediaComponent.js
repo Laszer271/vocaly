@@ -112,8 +112,6 @@ const MediaComponent = ({ type }) => {
         throw new Error(error)
       }
     } 
-
-
   };
 
   const handleFileRemove = () =>{
