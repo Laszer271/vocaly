@@ -1,15 +1,12 @@
-from fastapi import FastAPI, Request, File, UploadFile
+from fastapi import FastAPI, Request, File, UploadFile, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from elevenlabs import set_api_key, clone, generate
 from tempfile import NamedTemporaryFile
-from pydub import AudioSegment
-import speech_recognition as sr
-import moviepy.editor as mp
 import os
 import shutil
 
 from app.config import *
+from app.utils import *
 
 # to start app cd to project root directory and run:
 # uvicorn app.main:app --reload
@@ -25,6 +22,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+output_processed_video = None
+
 
 @app.post("/video")
 async def read_item(video: UploadFile):
@@ -37,44 +36,54 @@ async def read_item(video: UploadFile):
     # 3. Clone voice (if needed) from audio
     # 4. Generate new audio from text (and cloned voice)
     # 5. Merge new audio with video
-    # 6. Output edited video
+    # 6. Clean the temp files
+    # 7. Output edited video
     
     # 0. Save video to temp file
-    # video_file = NamedTemporaryFile(suffix=video.filename+'.mp4')
-    # video_file.write(data)
     print('0. Save video to temp file')
-    video_path = "./" + video.filename
-    with open(video_path, 'wb') as f:
-        f.write(data)
+    video_path = save_video(data, './' + video.filename)
 
     # 1. Get audio from video
     print('1. Get audio from video')
-    r = sr.Recognizer()
-    with sr.AudioFile(video_path) as source:
-        audio_data = r.record(source)
-    # audio_file = NamedTemporaryFile(suffix=video.filename+'.wav')
-
-    print('1.1 Save audio')
-    audio_path = 'temp_audio.wav'
-    with open(audio_path, 'wb') as audio_file:
-        audio_file.write(audio_data.get_wav())
+    audio_path = get_audio_from_video(video_path, 'temp_audio.wav')
 
     # 1.5 Convert audio to mp3
     print('1.5 Convert audio to mp3')
-    # filename = os.path.basename(audio_file.name)
-    mp3_audio_path = audio_path.replace('.wav', '.mp3')
-    AudioSegment.from_wav(audio_path).export(mp3_audio_path, format="mp3")
-
+    mp3_audio_path = convert_wav_to_mp3(audio_path, audio_path.replace('.wav', '.mp3'))
+    
     # 2. Get text from audio
     print('2. Get text from audio')
-    text = r.recognize_google(audio_data)
-    print(text)
-
+    transcript = get_text_from_audio(mp3_audio_path)
+    print(transcript)
     
     # 3. Clone voice (if needed) from audio
+    print('3. Clone voice (if needed) from audio')
+    voice = clone_voice(mp3_audio_path)
+    
+    # 4. Generate new audio from text (and cloned voice)
+    print('4. Generate new audio from text (and cloned voice)')
+    generated_audio_path = generate_audio(transcript, voice, 'temp_generated.wav')
 
+    # 5. Merge new audio with video
+    print('5. Merge new audio with video')
+    final_video_path = merge_audio_with_video(generated_audio_path, video_path, 'temp_final_video.mp4')
 
-    return {"filenames": video.filename}
+    # 5.5 Convert video to bytes
+    print('5.5 Convert video to bytes')
+    with open(final_video_path, "rb") as f:
+        final_video_bytes = f.read()
+
+    # 6. Clean the temp files
+    print('6. Clean the temp files')
+    os.remove(video_path)
+    os.remove(audio_path)
+    os.remove(mp3_audio_path)
+    os.remove(generated_audio_path)
+    os.remove(final_video_path)
+
+    # 7. Output edited video
+    print('7. Output edited video')
+    return Response(content=final_video_bytes, media_type="video/wav")
 
 @app.post("/audio")
 async def read_item(audio: UploadFile):
