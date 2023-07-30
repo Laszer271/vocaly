@@ -65,6 +65,7 @@ const MediaComponent = ({ type }) => {
         })
         if (response.ok){
           console.log("Success")
+          console.log(response)
         }
       }
       catch(error){
