@@ -11,8 +11,8 @@ function App() {
   return (
     <div className="text-center align-middle bg-[url('/public/img/Bg1.png')] bg-cover w-screen flex items-center justify-center h-screen">
 
-    <div className=" backdrop-filter backdrop-blur-lg bg-gray-900 bg-opacity-30 p-10 rounded-xl text-white h-2/3 w-2/3">
-    <div className="text-centerflex space-x-4 mb-4">
+    <div className=" backdrop-filter backdrop-blur-lg bg-gray-900 bg-opacity-30 p-6 rounded-xl text-white h-4/5 w-4/5">
+    <div className="text-centerflex space-x-4 mb-0">
       <button 
         onClick={() => {
           setname(AV[0])

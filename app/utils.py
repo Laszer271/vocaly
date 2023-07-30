@@ -6,11 +6,11 @@ import pvleopard
 from app.config import *
 
 
-def save_video(video_data, out_path, verbose=True):
+def save_data(data, out_path, verbose=True):
     with open(out_path, 'wb') as f:
-        f.write(video_data)
+        f.write(data)
         if verbose:
-            print('Video saved to:', out_path)
+            print('data saved to:', out_path)
     return out_path
 
 
@@ -21,7 +21,12 @@ def get_audio_from_video(video_path, out_path):
 
 
 def convert_wav_to_mp3(wav_path, mp3_path):
-    AudioSegment.from_wav(wav_path).export(mp3_path, format="mp3")
+    if wav_path.endswith('.wav'):
+        AudioSegment.from_wav(wav_path).export(mp3_path, format="mp3")
+    elif wav_path.endswith('.mp3'):
+        AudioSegment.from_mp3(wav_path).export(mp3_path, format="mp3")
+    else:
+        raise Exception(f'File extension not supported: {wav_path}')
     return mp3_path
 
 
