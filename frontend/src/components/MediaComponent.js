@@ -156,7 +156,7 @@ const MediaComponent = ({ type }) => {
   async function handleTextFetch() {
     setDoTextEdit(true);
     try {
-      const response = await fetch("/textedition");
+      const response = await fetch(url + "/textedition");
       if (response.ok) {
         const data = await response.json();
         const newText = data.text; 
@@ -173,7 +173,7 @@ const MediaComponent = ({ type }) => {
   async function handleTextEdition(){
     setDoTextEdit(false);
     try{
-      const response = await fetch("/textedition",{
+      const response = await fetch(url + "/textedition",{
         method: "POST",
         body: JSON.stringify(editText)
       })
