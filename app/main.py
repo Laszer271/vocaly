@@ -149,7 +149,7 @@ async def receive_settings(request: Request):
 async def read_item(voiceSample: UploadFile):
     print("Voice Sample")
     data = await voiceSample.read()
-    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/voiceSample/" + audio.filename
+    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/voiceSample/" + voiceSample.filename
     with open(save_to,'wb') as f:
         f.write(data)
 
