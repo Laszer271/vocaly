@@ -81,7 +81,7 @@ async def read_item(video: UploadFile):
     os.remove(mp3_audio_path)
     os.remove(generated_audio_path)
     os.remove(final_video_path)
-    # TODO: erase created voice
+    voice.delete()
 
     # 7. Output edited video
     print('7. Output edited video')
@@ -132,7 +132,7 @@ async def read_item(audio: UploadFile):
     os.remove(audio_path)
     os.remove(mp3_audio_path)
     os.remove(generated_audio_path)
-    # TODO: erase created voice
+    voice.delete()
 
     # 7. Output edited video
     print('7. Output edited video')
