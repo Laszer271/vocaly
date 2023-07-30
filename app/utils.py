@@ -8,6 +8,7 @@ from typing import Sequence, Optional
 import os
 from moviepy.video.tools.subtitles import SubtitlesClip
 import translators as ts
+import openai
 
 TMP_FILE = 'tmpsub.srt'
 
@@ -145,7 +146,7 @@ def combine_video_and_audio(video_input, audio_input):
 
 def combine_video_and_subtitles(video_input, subtitles) -> mp.VideoClip:
     def generator(txt): return mp.TextClip(
-        txt, font='Arial', fontsize=24, color='black')
+        txt, font='Verdana', fontsize=36, color='white', bg_color='black', align='center')#.set_pos('center', 'top')
     sub = SubtitlesClip(TMP_FILE, generator)
     sub.set_position(("center", "top"))  # TODO
     final = mp.CompositeVideoClip([video_input, sub])
@@ -196,3 +197,31 @@ def synth_voice_from_text(text, voice):
         model="eleven_multilingual_v1"
     )
     return audio
+
+
+def get_completion_from_messages(messages,
+                                    model="gpt-3.5-turbo",
+                                    temperature=0, max_tokens=500):
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=messages,
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+        return response.choices[0].message["content"]
+
+
+def add_puctuation(user_message):
+    system_message = f"""
+    Insert punctuation marks, without changing the text.
+    """
+
+    messages =  [
+    {'role':'system',
+    'content': system_message},
+    {'role':'user',
+    'content': user_message},
+    ]
+
+    response = get_completion_from_messages(messages)
+    return response
