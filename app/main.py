@@ -45,3 +45,13 @@ async def receive_settings(request: Request):
     data = await request.json()
     print(data)
     return {"message": data}
+
+@app.post("/voicesample")
+async def read_item(voiceSample: UploadFile):
+    print("Voice Sample")
+    data = await voiceSample.read()
+    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/voiceSample/" + audio.filename
+    with open(save_to,'wb') as f:
+        f.write(data)
+
+    return {"filenames": voiceSample.filename}
