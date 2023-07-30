@@ -1,6 +1,7 @@
 {
   "name": "hackathon",
   "version": "0.1.0",
+  "proxy": "http://127.0.0.1:8000",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^2.0.18",
@@ -14,6 +15,7 @@
     "react-loader-spinner": "^5.3.4",
     "react-player": "^2.12.0",
     "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

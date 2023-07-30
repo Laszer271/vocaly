@@ -4,7 +4,7 @@ import Button from "./button";
 import InputFile from "./inputFile"
 import {Puff, Loader} from "react-loader-spinner"
 import Settings from "./settings";
-
+import { url } from "../utilis/url";
 
 const MediaComponent = ({ type }) => {
   const title = type;
@@ -53,8 +53,10 @@ const MediaComponent = ({ type }) => {
         //SETTINGS POST
 
     //Handle settings post
+    console.log(url)
     try{
-      const response = await fetch("/settings",{
+      const response = await fetch(url+"/settings",{
+        // mode: 'cors', // <--- WAŻNE
         method:"POST",
         body: JSON.stringify(formData)
       })
@@ -66,7 +68,8 @@ const MediaComponent = ({ type }) => {
     //Handle voice sample
     if(voiceSample){
       try{
-        const response = await fetch("/voicesample",{
+        const response = await fetch(url+"/voicesample",{
+          // mode: 'cors', // <--- WAŻNE
         method:"POST",
           body: voiceSample
         })
@@ -89,7 +92,8 @@ const MediaComponent = ({ type }) => {
       setVideoLoading(true)
       console.log(videoLoading)
       try{
-        const response = await fetch("/video",{
+        const response = await fetch(url+"/video",{
+          // mode: 'cors', // <--- WAŻNE
           method:"POST",
           body: data
         })
@@ -112,7 +116,8 @@ const MediaComponent = ({ type }) => {
       data.append("audio", e.target.files[0]);
       setAudioLoading(true)
       try{
-        const response = await fetch("/audio",{
+        const response = await fetch(url + "/audio",{
+          // mode: 'cors', // <--- WAŻNE
           method:"POST",
           body: data
         })
