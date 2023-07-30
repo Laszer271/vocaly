@@ -24,6 +24,7 @@ services:
     #   - app-network
     environment:
       - REACT_APP_API_URL=https://hback.readiy.tech
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true
 
 # networks:
 #   app-network:
