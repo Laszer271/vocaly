@@ -67,6 +67,8 @@ const MediaComponent = ({ type }) => {
     //Handle voice sample
     if(voiceSample){
       try{
+        console.log("Voice sample")
+        console.log(voiceSample)
         const response = await fetch(url+"/voicesample",{
           // mode: 'cors', // <--- WAŻNE
         method:"POST",
@@ -181,10 +183,10 @@ const MediaComponent = ({ type }) => {
       if (!response.ok){
         console.error("Failed")
       }
-      // const blob = await response.blob()
-      // const videoBlobUrl = URL.createObjectURL(blob)
-      // setReturnedVideo(videoBlobUrl)
-      // setVideoLoading(false)
+      const blob = await response.blob()
+      const videoBlobUrl = URL.createObjectURL(blob)
+      setReturnedVideo(videoBlobUrl)
+      setVideoLoading(false)
     }
     catch(error){
       console.error("Error posting text:", error);
