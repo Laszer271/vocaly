@@ -107,7 +107,7 @@ async def read_item(audio: UploadFile):
 
     # 1.5 Convert audio to mp3
     print('1 Convert audio to mp3')
-    mp3_audio_path = convert_wav_to_mp3(audio_path, audio_path.replace('.wav', '.mp3'))
+    mp3_audio_path = convert_wav_to_mp3(audio_path, 'mp3_' + audio_path.replace('.wav', '.mp3'))
     
     # 2. Get text from audio
     print('2. Get text from audio')
