@@ -37,14 +37,16 @@ const Settings = ({formData,setFormData, setVoiceSample}) => {
     <form >
       <label htmlFor="doSubtitles">
         <div className="cursor-pointer flex w-64 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
-            <span className="mr-4">Generate subtitles</span>
+            <span className=" mr-4">Generate subtitles:</span>
+            <span className={!formData.doSubtitles ? "text-red-700 mr-4" : "text-green-700 mr-4" }>{formData.doSubtitles ? "ON" : "OFF"}</span>
             <input
+
             type="checkbox"
             id="doSubtitles"
             checked={formData.doSubtitles}
             onChange={handleChange}
             name="doSubtitles"
-            className="form-checkbox"
+            className="form-checkbox hidden"
             />
         </div>
       </label>
