@@ -68,15 +68,6 @@ async def read_item(video: UploadFile):
     print('4. Generate new audio from text (and cloned voice)')
     chosen_language = None
     if (saved_settings is not None):
-        # match saved_settings["language"]:
-        #     case "English":
-        #         chosen_language = 'en'
-        #     case "Polish":
-        #         chosen_language = 'pl'
-        #     case "Hindi":
-        #         chosen_language = 'hi'
-        #     case "Spanish":
-        #         chosen_language = 'es'
         if saved_settings["language"].lower() == "no translation":
             chosen_language = None
         else:
@@ -105,11 +96,17 @@ async def read_item(video: UploadFile):
             final_video_path, generated_audio_path)
         subtitled_video.write_videofile(
             final_video_path_with_sub, fps=subtitled_video.fps)
+    else:
+        final_video_path_with_sub = None
 
     # 5.5 Convert video to bytes
     print('5.5 Convert video to bytes')
-    with open(final_video_path_with_sub, "rb") as f:
-        final_video_bytes = f.read()
+    if final_video_path_with_sub is not None:
+        with open(final_video_path_with_sub, "rb") as f:
+            final_video_bytes = f.read()
+    else:
+        with open(final_video_path, "rb") as f:
+            final_video_bytes = f.read()
 
     # 6. Clean the temp files
     print('6. Clean the temp files')
@@ -119,6 +116,8 @@ async def read_item(video: UploadFile):
     os.remove(mp3_audio_path)
     os.remove(generated_audio_path)
     # os.remove(final_video_path)
+    # if final_video_path_with_sub is not None:
+    #     os.remove(final_video_path_with_sub)
     voice.delete()
 
 
