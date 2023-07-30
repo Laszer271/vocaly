@@ -175,8 +175,12 @@ const MediaComponent = ({ type }) => {
         method: "POST",
         body: JSON.stringify(editText)
       })
-      .then((response)=>response.json())
-      .then((data)=>console.log(data))
+      if (!response.ok){
+        console.error("Failed")
+      }
+      const blob = await response.blob()
+      const videoBlobUrl = URL.createObjectURL(blob)
+      setReturnedVideo(videoBlobUrl)
     }
     catch(error){
       console.error("Error posting text:", error);
