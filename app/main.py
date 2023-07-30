@@ -25,7 +25,8 @@ app.add_middleware(
 
 saved_settings = None
 # saved_voice_sample = None
-transcripts = "asdjnasjkhdbkasjdbkasjdnk"
+transcript = None
+transcript_manual_change = False
 
 
 @app.post("/video")
@@ -57,7 +58,12 @@ async def read_item(video: UploadFile):
 
     # 2. Get text from audio
     print('2. Get text from audio')
-    transcript = get_text_from_audio(mp3_audio_path)
+    global transcript_manual_change
+    if not transcript_manual_change:
+        global transcript
+        transcript = get_text_from_audio(mp3_audio_path)
+    else: 
+        transcript_manual_change = False
     print(transcript)
 
     # 3. Clone voice (if needed) from audio
@@ -151,7 +157,13 @@ async def read_item(audio: UploadFile):
 
     # 2. Get text from audio
     print('2. Get text from audio')
-    transcript = get_text_from_audio(mp3_audio_path)
+    
+    global transcript_manual_change
+    if not transcript_manual_change:
+        global transcript
+        transcript = get_text_from_audio(mp3_audio_path)
+    else: 
+        transcript_manual_change = False
     print(transcript)
 
     # 3. Clone voice (if needed) from audio
@@ -204,11 +216,18 @@ async def read_item(voiceSample: UploadFile):
 
 @app.get("/textedition")
 async def get_text():
-    return {"text": transcripts}
+    global transcript
+    print(transcript)
+    print(transcript_manual_change)
+    return {"text": transcript}
 
 
 @app.post("/textedition")
 async def post_text(request: Request):
     data = await request.json()
-    print(data)
+    print('Text edition:', data)
+    global transcript_manual_change
+    global transcript
+    transcript_manual_change = True
+    transcript = data
 
