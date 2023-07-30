@@ -2,7 +2,7 @@ import React from 'react'
 import InputFile from "./inputFile";
 
 
-const Settings = ({formData,setFormData}) => {
+const Settings = ({formData,setFormData, setVoiceSample}) => {
 
 
   function handleChange(event){
@@ -13,9 +13,17 @@ const Settings = ({formData,setFormData}) => {
     }))
   }
 
+  function handleVoiceSample(e){
+    console.log("Voice sample downloaded successfully!")
+    const data = new FormData();
+    data.append("voiceSample", e.target.files[0]);
+    setVoiceSample(data)
+  }
+
   return (
-    <form className="flex flex-col items-center ml-5 mt-2 p-3 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 shadow-md k">
-      <InputFile value={"Voice sample"} onFileChange={handleChange} />
+    <div className="flex flex-col items-center ml-5 mt-2 p-3 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 shadow-md k">
+    <InputFile value={"Voice sample"} onFileChange={handleVoiceSample} />
+    <form >
       <label htmlFor="doSubtitles">
         <div className="cursor-pointer flex w-64 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
             <span className="mr-4">Generate subtitles</span>
@@ -49,6 +57,7 @@ const Settings = ({formData,setFormData}) => {
         </div>
 
     </form>
+    </div>
   )
 }
 

@@ -19,7 +19,7 @@ const MediaComponent = ({ type }) => {
     voiceProbe: null,
     language: ""
 })
-
+  const [voiceSample, setVoiceSample] = useState(null)
 
 
   // handle file selection
@@ -57,13 +57,11 @@ const MediaComponent = ({ type }) => {
     catch(error){throw new Error(error)}
 
     //Handle voice sample
-      const data = new FormData();
-      data.append("voiceSample", e.target.files[0]);
-    
+    if(voiceSample){
       try{
         const response = await fetch("/voicesample",{
         method:"POST",
-          body: data
+          body: voiceSample
         })
         if (response.ok){
           console.log("Success")
@@ -72,6 +70,7 @@ const MediaComponent = ({ type }) => {
       catch(error){
         throw new Error(error)
       }
+    }
 
         //END
 
@@ -145,7 +144,7 @@ const MediaComponent = ({ type }) => {
             </div>
 
             <div className="w-1/3 flex flex-col items-center justify-center">
-                <Settings setFormData={setFormData} formData={formData}/>
+                <Settings setFormData={setFormData} formData={formData} setVoiceSample={setVoiceSample}/>
             </div>
 
               {/* <div className="mt-6">
@@ -178,7 +177,7 @@ const MediaComponent = ({ type }) => {
               <Button value={"Remove"} handleClick={handleFileRemove} />
             </div>
             <div className="w-1/3 flex flex-col items-center justify-center">
-                <Settings setFormData={setFormData} formData={formData}/>
+                <Settings setFormData={setFormData} formData={formData} setVoiceSample={setVoiceSample}/>
               </div>
           </div>
           <div className="flex flex-row justify-between">
