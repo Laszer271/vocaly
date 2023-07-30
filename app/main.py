@@ -104,14 +104,14 @@ async def read_item(video: UploadFile):
 
     # 6. Clean the temp files
     print('6. Clean the temp files')
-    '''
+
     os.remove(video_path)
     os.remove(audio_path)
     os.remove(mp3_audio_path)
     os.remove(generated_audio_path)
     os.remove(final_video_path)
     voice.delete()
-    '''
+
 
     # 7. Output edited video
     print('7. Output edited video')
