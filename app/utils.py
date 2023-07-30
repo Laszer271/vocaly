@@ -80,6 +80,9 @@ def clone_and_generate_audio(text, audio_path, out_path):
 def merge_audio_with_video(audio_path, video_path, out_path):
     video = mp.VideoFileClip(video_path)
     audio = mp.AudioFileClip(audio_path)
+    ratio = video.duration/audio.duration
+    print(ratio)
+    video = video.fx(mp.vfx.speedx, ratio)
     final_video = video.set_audio(audio)
     with open(out_path, 'w') as f:
         final_video.write_videofile(out_path)
