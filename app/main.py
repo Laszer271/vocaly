@@ -145,7 +145,6 @@ async def receive_settings(request: Request):
     print(data)
     return {"message": data}
 
-<<<<<<< HEAD
 @app.post("/voicesample")
 async def read_item(voiceSample: UploadFile):
     print("Voice Sample")
@@ -155,12 +154,4 @@ async def read_item(voiceSample: UploadFile):
         f.write(data)
 
     return {"filenames": voiceSample.filename}
-=======
 
-@app.post("/voicesample")
-async def receive_settings(audio: UploadFile):
-    print("Voice sample")
-    data = await audio.read()
-    print(data)
-    return {"message": data}
->>>>>>> video and audio processing works
