@@ -3,3 +3,4 @@ pydub==0.25.1
 moviepy==1.0.3
 fastapi[all]==0.100.1
 elevenlabs==0.2.21
+pvleopard==1.2.2

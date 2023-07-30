@@ -9,36 +9,54 @@ const MediaComponent = ({ type }) => {
   const description = `Travel back 66 million years to when majestic
     dinosaurs and extraordinary creatures roamed
     the lands, seas, and skies.`;
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
   const [audioFileUrl, setAudioFileUrl] = useState();
   const [videoFileUrl, setVideoFileUrl] = useState();
   const [playing, setPlaying] = useState(false);
 
-  // handle file upload
-  const handleUpload = async () => {
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    // replace with your server URL
-    const url = "/video";
-
-    await axios.post(url, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    // if upload successful, set file URL to local object URL
-    title==="Video" ? setVideoFileUrl(URL.createObjectURL(selectedFile)) : setAudioFileUrl(URL.createObjectURL(selectedFile))
-  };
 
   // handle file selection
-  const handleFileAdd = (e) => {
+  const handleFileAdd = async (e) => {
     console.log("ADD")
-    title==="Video" ? setVideoFileUrl(URL.createObjectURL(e.target.files[0])) : setAudioFileUrl(URL.createObjectURL(e.target.files[0]))
     setPlaying(false);
 
-    
+    if(title==="Video"){
+      const data = new FormData();
+      data.append("video", e.target.files[0]);
+
+      try{
+        const response = await fetch("/video",{
+          method:"POST",
+          body: data
+        })
+        if (response.ok){
+          console.log("Success")
+          console.log(response)
+        }
+      }
+      catch(error){
+        throw new Error(error)
+      }
+    } 
+
+    if(title==="Audio"){
+      const data = new FormData();
+      data.append("audio", e.target.files[0]);
+
+      try{
+        const response = await fetch("/audio",{
+          method:"POST",
+          body: data
+        })
+        if (response.ok){
+          console.log("Success")
+        }
+      }
+      catch(error){
+        throw new Error(error)
+      }
+    } 
+
   };
 
   const handleFileRemove = () =>{

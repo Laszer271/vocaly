@@ -1,8 +1,12 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, File, UploadFile, Response
 from fastapi.middleware.cors import CORSMiddleware
-import re
+
+from tempfile import NamedTemporaryFile
+import os
+import shutil
 
 from app.config import *
+from app.utils import *
 
 # to start app cd to project root directory and run:
 # uvicorn app.main:app --reload
@@ -18,13 +22,76 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+output_processed_video = None
 
-@app.post("/api/video")
-async def read_item(info: Request):
-    data = await info.json()
-    # data = data['latexText']
 
+@app.post("/video")
+async def read_item(video: UploadFile):
+    print("Video processing:", video.filename)
+    data = await video.read()
+    
+    # 0. Save video to temp file
+    # 1. Get audio from video
+    # 2. Get text from audio
+    # 3. Clone voice (if needed) from audio
+    # 4. Generate new audio from text (and cloned voice)
+    # 5. Merge new audio with video
+    # 6. Clean the temp files
+    # 7. Output edited video
+    
+    # 0. Save video to temp file
+    print('0. Save video to temp file')
+    video_path = save_video(data, './' + video.filename)
+
+    # 1. Get audio from video
+    print('1. Get audio from video')
+    audio_path = get_audio_from_video(video_path, 'temp_audio.wav')
+
+    # 1.5 Convert audio to mp3
+    print('1.5 Convert audio to mp3')
+    mp3_audio_path = convert_wav_to_mp3(audio_path, audio_path.replace('.wav', '.mp3'))
+    
+    # 2. Get text from audio
+    print('2. Get text from audio')
+    transcript = get_text_from_audio(mp3_audio_path)
+    print(transcript)
+    
+    # 3. Clone voice (if needed) from audio
+    print('3. Clone voice (if needed) from audio')
+    voice = clone_voice(mp3_audio_path)
+    
+    # 4. Generate new audio from text (and cloned voice)
+    print('4. Generate new audio from text (and cloned voice)')
+    generated_audio_path = generate_audio(transcript, voice, 'temp_generated.wav')
+
+    # 5. Merge new audio with video
+    print('5. Merge new audio with video')
+    final_video_path = merge_audio_with_video(generated_audio_path, video_path, 'temp_final_video.mp4')
+
+    # 5.5 Convert video to bytes
+    print('5.5 Convert video to bytes')
+    with open(final_video_path, "rb") as f:
+        final_video_bytes = f.read()
+
+    # 6. Clean the temp files
+    print('6. Clean the temp files')
+    os.remove(video_path)
+    os.remove(audio_path)
+    os.remove(mp3_audio_path)
+    os.remove(generated_audio_path)
+    os.remove(final_video_path)
+
+    # 7. Output edited video
+    print('7. Output edited video')
+    return Response(content=final_video_bytes, media_type="video/wav")
 
 @app.post("/audio")
-async def read_item(info: Request):
-    pass
+async def read_item(audio: UploadFile):
+    print("JESTEM")
+    data = await audio.read()
+    save_to = "/home/bartek/Desktop/VoiceCleaningAI/presenhancment/app/audio/" + audio.filename
+    with open(save_to,'wb') as f:
+        f.write(data)
+
+    return {"filenames": audio.filename}
+

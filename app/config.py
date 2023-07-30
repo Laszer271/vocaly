@@ -1,6 +1,15 @@
 
-try:
-    with open('./credentials/11api.txt', 'r') as f:
-        API_KEY_11 = f.read().strip()
-except FileNotFoundError as e:
-    raise FileNotFoundError('Please create a file called 11api.txt in the credentials folder and add your API key for elevenlabs there') from e
+from elevenlabs import set_api_key
+
+def _get_api_key(path: str) -> str:
+    try:
+        with open(path, 'r') as f:
+            api_key = f.read().strip()
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f'Please create a file called {path} and add your API key there') from e
+    return api_key
+
+API_KEY_11 = _get_api_key('./credentials/11api.txt')
+set_api_key(API_KEY_11)
+
+LEO_API_KEY = _get_api_key('./credentials/leopard_api.txt')
