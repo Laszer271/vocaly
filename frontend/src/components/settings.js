@@ -4,12 +4,23 @@ import InputFile from "./inputFile";
 
 const Settings = ({formData,setFormData, setVoiceSample}) => {
 
+  const supported_languages ={
+    "English": "en",
+    "Deutsch": "de",
+    "Polish": "pl",
+    "Spanish": "es",
+    "Italian": "it",
+    "French": "fr",
+    "Portugese": "pt",
+    "Hindi": "hi",
+  }
 
   function handleChange(event){
     console.log(event.target.value)
+    console.log(supported_languages[event.target.value])
     setFormData(prevFormData =>({
         ...prevFormData,
-        [event.target.name]: event.target.type === "checkbox" ? event.target.checked : event.target.value
+        [event.target.name]: event.target.type === "checkbox" ? event.target.checked : supported_languages[event.target.value]
     }))
   }
 
@@ -40,19 +51,25 @@ const Settings = ({formData,setFormData, setVoiceSample}) => {
 
       <div className="w-64 px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-2">
         <label htmlFor="language" className="mr-2">
-            Tranlate to:
+            Translate to:
         </label>
         <select
             id="language"
-            value={formData.language}
+            // value={formData.language}
             onChange={handleChange}
             name="language"
             className="mt-1 block w-full bg-white border rounded-md shadow-sm focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-black"
         >
+            <option value="No translation">No translation</option>
             <option value="English">English</option>
+            <option value="Deutsch">Deutsch</option>
             <option value="Polish">Polish</option>
-            <option value="Hindi">Hindi</option>
             <option value="Spanish">Spanish</option>
+            <option value="Italian">Italian</option>
+            <option value="French">French</option>
+            <option value="Portugese">Portugese</option>
+            <option value="Hindi">Hindi</option>
+
         </select>
         </div>
 
@@ -60,5 +77,4 @@ const Settings = ({formData,setFormData, setVoiceSample}) => {
     </div>
   )
 }
-
 export default Settings

@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import Button from "./button";
 import InputFile from "./inputFile"
-import {Puff, Loader} from "react-loader-spinner"
+import {Puff} from "react-loader-spinner"
 import Settings from "./settings";
 import { url } from "../utilis/url";
 
 const MediaComponent = ({ type }) => {
   const title = type;
-  const description = `Travel back 66 million years to when majestic
-    dinosaurs and extraordinary creatures roamed
-    the lands, seas, and skies.`;
   const [audioFileUrl, setAudioFileUrl] = useState();
   const [videoFileUrl, setVideoFileUrl] = useState(null);
   const [playingOriginal, setPlayingOriginal] = useState(false);
@@ -20,7 +17,7 @@ const MediaComponent = ({ type }) => {
     {
     doSubtitles: false,
     voiceProbe: null,
-    language: ""
+    language: "No translation"
 })
   const [voiceSample, setVoiceSample] = useState(null)
   const [returnedVideo,setReturnedVideo] = useState(null)
