@@ -6,7 +6,7 @@ const TextEditor = ({editText, setEditText}) => {
     setEditText(e.target.value)
   }
   return (
-    <div class="mt-10 w-full h-60 relative">
+    <div className="mt-10 w-full h-60 relative">
     <textarea
         value={editText}
         onChange={handleChange}

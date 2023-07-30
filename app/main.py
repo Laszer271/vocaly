@@ -191,3 +191,20 @@ async def read_item(voiceSample: UploadFile):
         f.write(data)
 
     return {"filenames": voiceSample.filename}
+
+#Tutaj wrzućcie tekstu z transkrypcji, on będzie wrzucany do tego textarea
+transcripts = "Bla bla bla bla bla"
+
+@app.get("/textedition")
+async def get_text():
+    return {"text": transcripts}
+
+@app.post("/textedition")
+async def post_text(request: Request):
+    data = await request.json()
+    print(data)
+
+@app.post("/textedition")
+async def post_text(request: Request):
+    data = await request.json()
+    print(data)

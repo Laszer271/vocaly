@@ -151,11 +151,39 @@ const MediaComponent = ({ type }) => {
     setPlayingProcessed(false)
   }
 
-  //Handle text edition
-  function handleTextEdition(){
-    setDoTextEdit(true)
+  //Handle text edition - Getting text from server side
+  async function handleTextFetch() {
+    setDoTextEdit(true);
+    try {
+      const response = await fetch("/textedition");
+      if (response.ok) {
+        const data = await response.json();
+        const newText = data.text; 
+        console.log(newText)
+        setEditText(newText);
+      } else {
+        console.error("Error fetching text from the server.");
+      }
+    } catch (error) {
+      console.error("Error fetching text:", error);
+    }
   }
-
+  
+  async function handleTextEdition(){
+    setDoTextEdit(false);
+    try{
+      const response = await fetch("/textedition",{
+        method: "POST",
+        body: JSON.stringify(editText)
+      })
+      .then((response)=>response.json())
+      .then((data)=>console.log(data))
+    }
+    catch(error){
+      console.error("Error posting text:", error);
+    }
+  }
+  
     // handle play control
   const handlePlayChangeOriginal = () => {
     setPlayingOriginal(prevPlayingOriginal => !prevPlayingOriginal);
@@ -180,15 +208,15 @@ const MediaComponent = ({ type }) => {
             {error && error}
             <InputFile icon={true} value={"Place your " + title} onFileChange={handleFileAdd} />
             <Button value={"Remove"} handleClick={handleFileRemove} />
-            {returnedVideo && !doTextEdit ? (
-              <button onClick={handleTextEdition} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
+            {returnedVideo && (!doTextEdit ? (
+              <button onClick={handleTextFetch} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
                 Change Text
               </button>
             ) : (
               <button onClick={handleTextEdition} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
                 Save Changes
               </button>
-            )}
+            ))}
           </div>
           <div className="w-1/3 flex flex-col items-center justify-center">
             <Settings setFormData={setFormData} formData={formData} setVoiceSample={setVoiceSample} />
