@@ -34,23 +34,21 @@ const MediaComponent = ({ type }) => {
     console.log("ADD")
     setPlayingOriginal(false);
     setPlayingProcessed(false)
-    
-    title==="Video" ? setVideoFileUrl(URL.createObjectURL(e.target.files[0])) : setAudioFileUrl(URL.createObjectURL(e.target.files[0]))
 
     //handling choosing wrong type of file
     const fileType = e.target.files[0].type
     console.log(fileType)
     if (title==="Audio" && fileType==="video/mp4"){
       setError("Please select audio format in this section only!")
-      return 
+      return 1
     }
     if (title==="Video" && fileType==="audio/mpeg"){
       setError("Please select video format in this section only!")
-      return 
+      return 1
     }
-
     setError(null)
 
+    title==="Video" ? setVideoFileUrl(URL.createObjectURL(e.target.files[0])) : setAudioFileUrl(URL.createObjectURL(e.target.files[0]))
         //SETTINGS POST
 
     //Handle settings post
@@ -232,16 +230,15 @@ const MediaComponent = ({ type }) => {
           <div className="w-1/2 flex flex-col items-center justify-center space-y-3">
             {(videoFileUrl && !doTextEdit) && (
               <>
-                <ReactPlayer width="100%" height="60%" playing={playingOriginal} url={videoFileUrl} />
-                <Button ifIcon={true} handleClick={handlePlayChangeOriginal} />
+                <ReactPlayer width="100%" height="70%" playing={playingOriginal} url={videoFileUrl} controls={true} />
+                {/* <Button ifIcon={true} handleClick={handlePlayChangeOriginal} /> */}
               </>
             )}
           </div>
           <div className="w-1/2 flex flex-col items-center justify-center space-y-3">
             {(returnedVideo && !doTextEdit) ? (
               <>
-                <ReactPlayer width="100%" height="60%" playing={playingProcessed} url={returnedVideo} />
-                <Button ifIcon={true} handleClick={handlePlayChangeProcessed} />
+                <ReactPlayer width="100%" height="70%" playing={playingProcessed} url={returnedVideo} controls={true} />
               </>
             ) : videoLoading ? (
               <>
