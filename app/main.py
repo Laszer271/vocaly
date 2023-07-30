@@ -25,7 +25,7 @@ app.add_middleware(
 
 saved_settings = None
 # saved_voice_sample = None
-transcripts = None
+transcripts = "asdjnasjkhdbkasjdbkasjdnk"
 
 
 @app.post("/video")
