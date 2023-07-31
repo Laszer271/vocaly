@@ -38,11 +38,11 @@ const MediaComponent = ({ type }) => {
     //handling choosing wrong type of file
     const fileType = e.target.files[0].type
     console.log(fileType)
-    if (title==="Audio" && fileType==="video/mp4"){
+    if (title==="Audio" && fileType!=="audio/"){
       setError("Please select audio format in this section only!")
       return 1
     }
-    if (title==="Video" && fileType==="audio/mpeg"){
+    if (title==="Video" && fileType!=="video/"){
       setError("Please select video format in this section only!")
       return 1
     }
