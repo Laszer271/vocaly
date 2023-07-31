@@ -67,6 +67,8 @@ const MediaComponent = ({ type }) => {
     //Handle voice sample
     if(voiceSample){
       try{
+        console.log("Voice sample")
+        console.log(voiceSample)
         const response = await fetch(url+"/voicesample",{
           // mode: 'cors', // <--- WAŻNE
         method:"POST",
@@ -181,10 +183,10 @@ const MediaComponent = ({ type }) => {
       if (!response.ok){
         console.error("Failed")
       }
-      // const blob = await response.blob()
-      // const videoBlobUrl = URL.createObjectURL(blob)
-      // setReturnedVideo(videoBlobUrl)
-      // setVideoLoading(false)
+      const blob = await response.blob()
+      const videoBlobUrl = URL.createObjectURL(blob)
+      setReturnedVideo(videoBlobUrl)
+      setVideoLoading(false)
     }
     catch(error){
       console.error("Error posting text:", error);
@@ -263,8 +265,8 @@ const MediaComponent = ({ type }) => {
       <>
         <div className="flex flex-row justify-between p-6 mb-0">
           <div className="w-1/3 text-left">
-            <h1 className="font-bold text-4xl mb-2">{'VoiceCleaner'}</h1>
-            <p className="text-lg mb-2">{'Tourettes Talker is an innovative app designed to help individuals with Tourettes Syndrome or stuttering communicate more confidently in English. With user-friendly features, it empowers users to express themselves with ease and clarity.'}</p>
+            <h1 className="font-bold text-4xl mb-2">{'Vocaly'}</h1>
+            <p className="text-lg mb-2">{'Vocaly - Your Voice, Your Way! Transform, Filter, and Express Yourself with Confidence. Experience the power of our app to customize your speech, turning your voice into a unique and seamless expression of your thoughts and emotions.'}</p>
             <p className="text-sm text-gray-500">Be patient!</p>
           </div>
           <div className="w-1/3 flex flex-col items-center justify-center mt-0">

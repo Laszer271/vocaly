@@ -29,6 +29,8 @@ const Settings = ({formData,setFormData, setVoiceSample}) => {
     const data = new FormData();
     data.append("voiceSample", e.target.files[0]);
     setVoiceSample(data)
+    console.log(data)
+    console.log(e.target.files[0])
   }
 
   return (
