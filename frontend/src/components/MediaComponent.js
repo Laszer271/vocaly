@@ -10,7 +10,7 @@ import TextEditor from "./textEditor";
 
 const MediaComponent = ({ type }) => {
   const title = type;
-  const [audioFileUrl, setAudioFileUrl] = useState();
+  const [audioFileUrl, setAudioFileUrl] = useState(null);
   const [videoFileUrl, setVideoFileUrl] = useState(null);
   const [playingOriginal, setPlayingOriginal] = useState(false);
   const [playingProcessed, setPlayingProcessed] = useState(false);
@@ -28,6 +28,8 @@ const MediaComponent = ({ type }) => {
   const [audioLoading, setAudioLoading] = useState(false)
   const [editText,setEditText]=useState('')
   const [doTextEdit,setDoTextEdit]=useState(false) 
+  const [message, setMessage] = useState("");
+
 
   // handle file selection
   const handleFileAdd = async (e) => {
@@ -38,17 +40,24 @@ const MediaComponent = ({ type }) => {
     //handling choosing wrong type of file
     const fileType = e.target.files[0].type
     console.log(fileType)
-    if (title==="Audio" && fileType!=="audio/"){
+    if (title==="Audio" && !fileType.startsWith("audio/")){
       setError("Please select audio format in this section only!")
       return 1
     }
-    if (title==="Video" && fileType!=="video/"){
+    if (title === "Video" && !fileType.startsWith("video/")){
       setError("Please select video format in this section only!")
       return 1
     }
     setError(null)
 
-    title==="Video" ? setVideoFileUrl(URL.createObjectURL(e.target.files[0])) : setAudioFileUrl(URL.createObjectURL(e.target.files[0]))
+    // title==="Video" ? setVideoFileUrl(URL.createObjectURL(e.target.files[0])) : setAudioFileUrl(URL.createObjectURL(e.target.files[0]))
+
+    console.log("Filename: " , e.target.files[0].name)
+    console.log("Original: ",URL.createObjectURL(e.target.files[0]))
+    console.log("useState: ",audioFileUrl)
+    console.log("useState dla video: ",videoFileUrl)
+
+
         //SETTINGS POST
 
     //Handle settings post
@@ -88,9 +97,11 @@ const MediaComponent = ({ type }) => {
 
     //Handle video post
     if(title==="Video"){
+      setVideoFileUrl(URL.createObjectURL(e.target.files[0])) 
       const data = new FormData();
       data.append("video", e.target.files[0]);
       setVideoLoading(true)
+      setReturnedVideo(null)
       console.log(videoLoading)
       try{
         const response = await fetch(url+"/video",{
@@ -99,7 +110,7 @@ const MediaComponent = ({ type }) => {
           body: data
         })
         if (!response.ok) {
-          throw new Error('Failed to fetch audio file');
+          throw new Error('Failed to fetch video file');
         }
         const blob = await response.blob()
         const videoBlobUrl = URL.createObjectURL(blob)
@@ -113,9 +124,11 @@ const MediaComponent = ({ type }) => {
 
     //Handle audio post
     if(title==="Audio"){
+      setAudioFileUrl(URL.createObjectURL(e.target.files[0])) 
       const data = new FormData();
       data.append("audio", e.target.files[0]);
       setAudioLoading(true)
+      setReturnedAudio(null)
       try{
         const response = await fetch(url + "/audio",{
           // mode: 'cors', // <--- WAŻNE
@@ -125,9 +138,7 @@ const MediaComponent = ({ type }) => {
         if (!response.ok){
           throw new Error('Failed to fetch audio file');
         }
-        console.log("Tutaj jestem blob")
         const blob = await response.blob()
-        console.log("Czy tu tez")
         const audioBlobUrl = URL.createObjectURL(blob)
         setReturnedAudio(audioBlobUrl)
         setAudioLoading(false)
@@ -204,17 +215,6 @@ const MediaComponent = ({ type }) => {
       console.error("Error posting text:", error);
     }
   }
-  
-
-  
-    // handle play control
-  const handlePlayChangeOriginal = () => {
-    setPlayingOriginal(prevPlayingOriginal => !prevPlayingOriginal);
-    };
-  const handlePlayChangeProcessed = () => {
-    setPlayingProcessed(prevPlayingProcessed => !prevPlayingProcessed);
-    };
-    
   
 
   return (
@@ -306,7 +306,7 @@ const MediaComponent = ({ type }) => {
           <div className="w-1/2 flex flex-col items-center justify-center mt-20">
           {(audioFileUrl && !doTextEdit) && (
             <>
-                <audio controls>
+                <audio controls key={audioFileUrl}>
                   <source src={audioFileUrl} type="audio/mpeg" />
                 </audio>
               </>

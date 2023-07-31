@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, File, UploadFile, Response
+from fastapi import FastAPI, Request, File, UploadFile, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from tempfile import NamedTemporaryFile
@@ -9,6 +9,8 @@ from app.config import *
 from app.utils import *
 import json
 
+from fastapi.responses import StreamingResponse
+import asyncio
 # to start app cd to project root directory and run:
 # uvicorn app.main:app --reload
 # reference: https://fastapi.tiangolo.com/#run-it
@@ -36,6 +38,7 @@ is_video = False
 def process_file(data, initial_filename):
     # 0. Save video to temp file
     print('0. Save content to temp file')
+
     path = save_data(data, './' + initial_filename)
 
     # Save video content to global variable
@@ -47,6 +50,8 @@ def process_file(data, initial_filename):
     # 1. Get audio from video
     if is_video:
         print('1. Get audio from video')
+
+
         audio_path = get_audio_from_video(path, 'temp_audio.wav')
     else:
         audio_path = path
@@ -161,8 +166,7 @@ async def read_item(video: UploadFile):
     print("Video processing:", video.filename)
     data = await video.read()
 
-    final_video_bytes = process_file(data, video.filename)
-
+    final_video_bytes = await process_file(data, video.filename)
     return Response(content=final_video_bytes, media_type="video/wav")
 
 
