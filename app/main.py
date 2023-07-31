@@ -190,10 +190,8 @@ async def receive_settings(request: Request):
 
 @app.post("/voicesample")
 async def read_item(voiceSample: UploadFile):
-    print('='*50)
-    print("Voice Sample")
+    print("Got voice sample")
     data = await voiceSample.read()
-    print(data)
 
     global voicesample_manual_change
     global voicesample

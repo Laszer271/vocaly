@@ -265,7 +265,7 @@ const MediaComponent = ({ type }) => {
       <>
         <div className="flex flex-row justify-between p-6 mb-0">
           <div className="w-1/3 text-left">
-            <h1 className="font-bold text-4xl mb-2">{'VoiceCleaner'}</h1>
+            <h1 className="font-bold text-4xl mb-2">{'Vocaly'}</h1>
             <p className="text-lg mb-2">{'Vocaly - Your Voice, Your Way! Transform, Filter, and Express Yourself with Confidence. Experience the power of our app to customize your speech, turning your voice into a unique and seamless expression of your thoughts and emotions.'}</p>
             <p className="text-sm text-gray-500">Be patient!</p>
           </div>
