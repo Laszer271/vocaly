@@ -170,10 +170,17 @@ const MediaComponent = ({ type }) => {
     }
   }
   
-  async function handleTextEdition(){
+  async function handleTextEdition(isVideo){
     setDoTextEdit(false);
-    setReturnedVideo(null)
-    setVideoLoading(true)
+    console.log(isVideo)
+    if (isVideo){
+      setVideoLoading(true)
+      setReturnedVideo(null)
+    }else{
+       setAudioLoading(true) 
+       setReturnedAudio(null)
+    }
+    console.log(audioLoading)
     console.log(returnedVideo, videoLoading)
     try{
       const response = await fetch(url + "/textedition",{
@@ -185,8 +192,13 @@ const MediaComponent = ({ type }) => {
       }
       const blob = await response.blob()
       const videoBlobUrl = URL.createObjectURL(blob)
-      setReturnedVideo(videoBlobUrl)
-      setVideoLoading(false)
+      if (isVideo){
+        setVideoLoading(false)
+        setReturnedVideo(videoBlobUrl)
+      }else{
+         setAudioLoading(false) 
+         setReturnedAudio(videoBlobUrl)
+      }
     }
     catch(error){
       console.error("Error posting text:", error);
@@ -224,7 +236,7 @@ const MediaComponent = ({ type }) => {
                 Change Text
               </button>
             ) : (
-              <button onClick={handleTextEdition} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
+              <button onClick={() => handleTextEdition(true)} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
                 Save Changes
               </button>
             ))}
@@ -278,7 +290,7 @@ const MediaComponent = ({ type }) => {
                 Change Text
               </button>
             ) : (
-              <button onClick={handleTextEdition} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
+              <button onClick={() => handleTextEdition(false)} className="flex w-64 h-10 items-center justify-center px-4 py-2 rounded-md backdrop-filter backdrop-blur-lg bg-white bg-opacity-20 mb-6">
                 Save Changes
               </button>
             ))}
@@ -309,7 +321,7 @@ const MediaComponent = ({ type }) => {
               </>
             ) : audioLoading ? (
               <>
-                <div className="text-2xl">Video preprocessing...</div>
+                <div className="text-2xl">Audio preprocessing...</div>
                 <Puff color="#008080" height={100} width={100} />
               </>
             ) : null}
