@@ -166,7 +166,7 @@ async def read_item(video: UploadFile):
     print("Video processing:", video.filename)
     data = await video.read()
 
-    final_video_bytes = await process_file(data, video.filename)
+    final_video_bytes = process_file(data, video.filename)
     return Response(content=final_video_bytes, media_type="video/wav")
 
 
